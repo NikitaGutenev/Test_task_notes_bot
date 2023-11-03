@@ -1,6 +1,6 @@
 from head import command_handler, bot, cursor, connect, \
-                    Command, Message, FSMContext,  CallbackQuery, FSMContext, StatesGroup, State, \
-                    new_note, get_notes, del_note, dp, F
+                    Command, Message, FSMContext, FSMContext,  \
+                    new_note
 from keyboards.inline_keyboards.inline_keyboard import ikm_general
 from keyboards.inline_keyboards.callback import *
 
