@@ -5,6 +5,7 @@ from keyboards.inline_keyboards.inline_keyboard import ikm_note, ikm_general
 
 class NoteStates(StatesGroup):
     add_note = State()
+    del_note = State()
 
 
 @command_handler.callback_query(F.data[:2] == "ID")
@@ -20,6 +21,27 @@ Last edit: {note[2]}
     await bot.send_message(chat_id=callback.from_user.id,
                            text=text,
                            reply_markup=ikm_note)
+
+
+@command_handler.callback_query(F.data[:3] == "del")
+async def def_my_note(callback: CallbackQuery):
+    answer = callback.data[3:6]
+    id = callback.data[6:]
+    if answer == "yes":
+        if del_note(callback.from_user.id, id, cursor, connect):
+            await callback.answer(text="Ваша заметка удалена")
+            await bot.send_message(chat_id=callback.from_user.id, 
+                                    text="Главное меню.",
+                                    reply_markup=ikm_general)
+        else:
+            await bot.send_message(chat_id=callback.from_user.id, 
+                                    text="У вас такой заметки нет!\n\nГлавное меню.",
+                                    reply_markup=ikm_general)
+
+    elif answer == "no ":
+        await bot.send_message(chat_id=callback.from_user.id,
+                            text="Заметка не удалена.\n\nГлавное меню.",
+                            reply_markup=ikm_general)
 
 
 @command_handler.callback_query()
@@ -48,11 +70,14 @@ async def command_query_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(NoteStates.add_note)
 
         case "general_del_note":
-            await bot.edit_message_text(text="Точно удалить?",
-                                        chat_id=callback.from_user.id,
-                                        message_id=callback.message.id,
-                                        reply_markup=)
-            await callback.answer(text="Ваша заметка удалена")
+            await callback.answer(text="Введите ID заметки, которую хотите удалить:")
+            await state.set_state(NoteStates.del_note)
 
-        case "del_note_now":
-            pass
+        case "remove_note_now":
+            id = callback.message.text[3:callback.message.text.find("\n")]
+            await bot.send_message(text=f"Точно удалить заметку с ID: {id}?",
+                                    chat_id=callback.from_user.id,
+                                    # message_id=callback.message.id,
+                                    reply_markup=InlineKeyboardBuilder([[
+                                                InlineKeyboardButton(text="Да", callback_data="del"+"yes"+id),
+                                                InlineKeyboardButton(text="Нет", callback_data="del"+"no "+id)]]).as_markup())

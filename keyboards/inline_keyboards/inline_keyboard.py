@@ -15,11 +15,5 @@ ikm_general = InlineKeyboardBuilder([[get_button,
 ikm_note = InlineKeyboardBuilder([[
     get_button,
     new_button,
-    InlineKeyboardButton(text="Удалить заметку", callback_data="del_note_now")
-]])
-
-
-ikm_yes_no = InlineKeyboardBuilder([[
-    InlineKeyboardButton(text="Да", callback_data="yes"),
-    InlineKeyboardButton(text="Нет", callback_data="no")
-]])
+    InlineKeyboardButton(text="Удалить заметку", callback_data="remove_note_now")
+]]).as_markup()

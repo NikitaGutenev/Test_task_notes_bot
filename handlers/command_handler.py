@@ -16,7 +16,27 @@ async def start(message: Message):
 
 @command_handler.message(NoteStates.add_note)
 async def add_note(message: Message, state: FSMContext):
-    await state.update_data(note_description=message.text)
     new_note(message.text, message.from_user.id, cursor, connect)
     await message.answer(text='Ваша заметка была успешно сохранена!',
                          reply_markup=ikm_general)
+    await state.clear()
+    
+
+@command_handler.message(NoteStates.del_note)
+async def add_note(message: Message, state: FSMContext):
+    if message.text.isdigit():
+        await bot.send_message(text=f"Точно удалить заметку с ID: {message.text}?",
+                                    chat_id=message.from_user.id,
+                                    reply_markup=InlineKeyboardBuilder([[
+                                                InlineKeyboardButton(text="Да", callback_data="del"+"yes"+message.text),
+                                                InlineKeyboardButton(text="Нет", callback_data="del"+"no "+message.text)]]).as_markup())
+        await state.clear()
+    elif message.text == "exit":
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Заметка не удалена",
+                               reply_markup=ikm_general)
+        await state.clear()
+    else:
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Это не ID. Попробуйте снова или напишите exit")
+        

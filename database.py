@@ -40,7 +40,7 @@ def del_note(user_id: (str, int), note_id: (str, int), cursor: sqlite3.Cursor, c
 
     exist = bool(cursor.execute("SELECT * FROM note WHERE user_id = (:user_id) AND note_id = (:note_id)", data).fetchone())
     if exist:
-        cursor.execute("DELETE FROM notes WHERE note_id = (:note_id)", data)
+        cursor.execute("DELETE FROM note WHERE note_id = (:note_id)", data)
         connect.commit()
         return True
     return False
