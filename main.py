@@ -1,13 +1,11 @@
-from handlers import notes_controller, command_handler, error_handler
+from handlers import command_handler
 from head import bot, dp, asyncio, DeleteWebhook
 
 
 async def main():
     print('Я запустился')
     DeleteWebhook()
-    dp.include_routers(notes_controller.notes_controller, 
-                       command_handler.command_handler, 
-                       error_handler.error_handler)
+    dp.include_router(command_handler.command_handler)
     await dp.start_polling(bot)
 
 
