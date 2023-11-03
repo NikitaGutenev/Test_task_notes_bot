@@ -22,7 +22,7 @@ def new_note(text: str, user_id: (str, int), cursor: sqlite3.Cursor, connect: sq
         "user_id": user_id,
         "description": text
     }
-    cursor.execute("INSERT INTO notes (user_id, description, date) VALUES(:user_id, :description, CURRENT_TIMESTAMP)", data)
+    cursor.execute("INSERT INTO note (user_id, description, date) VALUES(:user_id, :description, CURRENT_TIMESTAMP)", data)
     connect.commit()
 
 
@@ -38,7 +38,7 @@ def del_note(user_id: (str, int), note_id: (str, int), cursor: sqlite3.Cursor, c
         "note_id": note_id,
     }
 
-    exist = bool(cursor.execute("SELECT * FROM notes WHERE user_id = (:user_id) AND note_id = (:note_id)", data).fetchone())
+    exist = bool(cursor.execute("SELECT * FROM note WHERE user_id = (:user_id) AND note_id = (:note_id)", data).fetchone())
     if exist:
         cursor.execute("DELETE FROM notes WHERE note_id = (:note_id)", data)
         connect.commit()
@@ -46,12 +46,16 @@ def del_note(user_id: (str, int), note_id: (str, int), cursor: sqlite3.Cursor, c
     return False
 
 
-def get_notes(user_id: (str, int), cursor: sqlite3.Cursor) -> tuple|bool:
-    data = {"user_id": user_id}
+def get_notes(id: (str, int), cursor: sqlite3.Cursor, count = 0) -> list|bool:
+    """count 1 = one message, count 0 = all message"""
+    data = {"id": id,}
+    if not count:
+        who_id = "user"
+    else:
+        who_id = "note"
+        
+    notes = cursor.execute(f"SELECT note_id, description, date FROM note WHERE {who_id}_id = (:id)", data).fetchall()
 
-    notes = cursor.execute("SELECT description, date FROM notes WHERE user_id = (:user_id)", data).fetchall()
-    exist = bool(notes)
-
-    if exist:
+    if bool(notes):
         return notes
     return False

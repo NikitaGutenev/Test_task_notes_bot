@@ -1,5 +1,5 @@
 from handlers import notes_controller, command_handler, error_handler
-from head import bot, dp, asyncio, DeleteWebhook, TOKEN
+from head import bot, dp, asyncio, DeleteWebhook
 
 
 async def main():
