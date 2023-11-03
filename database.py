@@ -26,7 +26,8 @@ def new_note(text: str, user_id: (str, int), cursor: sqlite3.Cursor, connect: sq
     connect.commit()
 
 
-def edit_note(note_id: (str, int), article: str, text: str, cursor: sqlite3.Cursor, connect: sqlite3.Connection) -> None:
+def edit_note(note_id: (str, int), text: str, cursor: sqlite3.Cursor, connect: sqlite3.Connection) -> None:
+    """В следующей версии бота будет..."""
     pass
 
 
